@@ -15,6 +15,10 @@
             color: #333;
         }
 
+        ul, ol {
+            list-style: none;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -340,47 +344,51 @@
 
         <ul>
             {% for review in reviews %}
-            <li class="review-card">
-                <div class="review-header">
-                    <h3>{{ review.book.title }}</h3>
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                </div>
-                <p class="review-text">
-                    {{ review.review_text }}
-                </p>
-                <p class="reviewer">- {{ review.author.alias_or_fullname }}</p>
-            </li>
+                <li class="review-card">
+                    <div class="review-header">
+                        <h3>{{ review.book.title }}</h3>
+                        <div class="stars">{{ review.get_rating_display }}</div>
+                    </div>
+                    <p class="review-text">
+                        {{ review.review_text }}
+                    </p>
+                    <p class="reviewer">- {{ review.author.alias_or_fullname }}</p>
+                </li>
             {% endfor %}
         </ul>
 
         <!-- Review Form -->
         <div style="margin-top: 3rem; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
             <h3 style="margin-bottom: 1.5rem; color: #333;">Yangi sharh qoldiring</h3>
-            <form>
+            <form action="{% url 'create-review' %}" method="post">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="book-name">Kitob nomi</label>
-                    <input type="text" id="book-name" name="book-name" required>
+                    <select id="book-name" name="book"
+                            style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px;">
+                        {% for book in books %}
+                            <option value="{{ book.pk }}">{{ book.title }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="rating">Baho</label>
                     <select id="rating" name="rating"
                             style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px;">
-                        <option value="5">⭐⭐⭐⭐⭐ (5 yulduz)</option>
-                        <option value="4">⭐⭐⭐⭐ (4 yulduz)</option>
-                        <option value="3">⭐⭐⭐ (3 yulduz)</option>
-                        <option value="2">⭐⭐ (2 yulduz)</option>
-                        <option value="1">⭐ (1 yulduz)</option>
+                        {% for value, label in ratings %}
+                            <option value="{{ value }}" {% if value == 5 %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="review">Sizning sharhingiz</label>
-                    <textarea id="review" name="review" rows="4"
+                    <textarea id="review" name="review_text" rows="4"
                               style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; resize: vertical;"
                               required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="reviewer-name">Ismingiz</label>
-                    <input type="text" id="reviewer-name" name="reviewer-name" required>
+                    <input type="text" id="reviewer-name" name="user_name" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Sharh qoldirish</button>
             </form>
