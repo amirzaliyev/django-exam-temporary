@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitoblar Dunyosi</title>
+    {% block styles %}
+    {% endblock %}
+</head>
+<body>
+<header>
+    <nav class="container">
+        <a href="{% url 'index' %}" style="text-decoration: none" class="logo">📚 Kitoblar Dunyosi</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'index' %}">Bosh sahifa</a></li>
+            <li><a href="{% url 'reviews' %}">Kitob sharhlari</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="btn btn-secondary" >Kirish</a>
+            <a href="{% url 'register' %}" class="btn btn-primary" >Ro'yxatdan o'tish</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    {% block contents %}
+
+    {% endblock %}
+</main>
+
+</body>
+</html>
